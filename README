@@ -1,0 +1,14 @@
+Some routines that can parse the ATNF pulsar database, 
+producing "pulsar" objects.
+The module relies on Aaron Parson's aipy module, and extends it to provide some pulsar-specific functionality (like pulsed emission).
+easy_install aipy
+
+sample usage:
+import pulsars as p
+
+ap = p.allpulsars()
+
+
+Notes:
+the pulsar properties are stored in a dictionary p.props
+
