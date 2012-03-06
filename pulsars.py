@@ -83,16 +83,22 @@ def ATNFpulsarlist(save=False):
             url = 'http://www.atnf.csiro.au/research/pulsar/psrcat/proc_form.php?Name=Name&JName=JName&RaJ=RaJ&DecJ=DecJ&PosEpoch=PosEpoch&F0=F0&F1=F1&F2=F2&PEpoch=PEpoch&DM=DM&W50=W50&W10=W10&S400=S400&S1400=S1400&SPINDX=SPINDX&startUserDefined=true&c1_val=&c2_val=&c3_val=&c4_val=&sort_attr=jname&sort_order=asc&condition=&pulsar_names=&ephemeris=short&coords_unit=raj/decj&radius=&coords_1=&coords_2=&style=Short+without+errors&no_value=*&fsize=3&x_axis=&x_scale=linear&y_axis=&y_scale=linear&state=query&table_bottom.x=43&table_bottom.y=24'
             Hurl = '#|indx|Name|PSRJ|RA|DEC|posepoch|F0|F1|F2|pepoch|DM|W50|W10|S400|S1400|SPINDX\n'
 
+#URL to get |NAME|PSRJ|RAJ|DECJ|POSEPOCH|F0|F1|F2|PEPOCH|DM|W50|W10|S400|S1400|SPINDX|PSRTYPE|NGLT|
             url2 = 'http://www.atnf.csiro.au/research/pulsar/psrcat/proc_form.php?Name=Name&JName=JName&RaJ=RaJ&DecJ=DecJ&PosEpoch=PosEpoch&F0=F0&F1=F1&F2=F2&PEpoch=PEpoch&DM=DM&W50=W50&W10=W10&S400=S400&S1400=S1400&SPINDX=SPINDX&Type=Type&NGlt=NGlt&startUserDefined=true&c1_val=&c2_val=&c3_val=&c4_val=&sort_attr=jname&sort_order=asc&condition=&pulsar_names=&ephemeris=short&coords_unit=raj/decj&radius=&coords_1=&coords_2=&style=Short+without+errors&no_value=*&fsize=3&x_axis=&x_scale=linear&y_axis=&y_scale=linear&state=query&table_bottom.x=40&table_bottom.y=24'
             Hurl2='#NAME|PSRJ|RAJ|DECJ|POSEPOCH|F0|F1|F2|PEPOCH|DM|W50|W10|S400|S1400|SPINDX|PSRTYPE|NGLT\n'
             sock = urllib.urlopen(url2)
             data = sock.read()
             sock.close()
             
+# massage the data
             data = data.split('<pre>')[1]
             data = data.split('</pre>')[0]
             data = data.splitlines()[5:-1]
+
+# save the data to a file
 	    if save == True:
+                
+# save pulsar data to file and backup previous versions
                 try:
 		    f = open('pulsar_list.txt','w')
 		    print>>f,Hurl2
@@ -101,14 +107,17 @@ def ATNFpulsarlist(save=False):
 		    f.close()
 		except:
                     pass
-            idx = 0
-            fbase = 'pulsar_list.txt.bz2'
-            fout = fbase
-            while os.path.exists(fout):
-                fout = fbase + '.'+ str(idx)
-                idx += 1
-            os.system('mv %s %s' % (fbase, fout))
-            os.system('bzip2  pulsar_list.txt') 
+
+                idx = 0
+		fbase = 'pulsar_list.txt.bz2'
+		fout = fbase
+		while os.path.exists(fout):
+                    fout = fbase + '.' + str(idx)
+		    idx += 1
+		if os.path.exists(fbase):
+		    os.system('mv %s %s' % (fbase, fout))
+		os.system('bzip2  pulsar_list.txt') 
+		    
             data = [data[i].split() for i in range(len(data)) if len(data[i]) > 1]
 
 
@@ -154,6 +163,15 @@ def __data2pulsarlist__(data=[]):
 
     return srcs
         
+
+#               
+#    ______  __ __|  |   ___________ _______ 
+#    \____ \|  |  \  |  /  ___/\__  \\_  __ \
+#    |  |_> >  |  /  |__\___ \  / __ \|  | \/
+#    |   __/|____/|____/____  >(____  /__|   
+#    |__|                   \/      \/       
+#
+
 
 class pulsar(a.amp.RadioFixedBody):
     """
@@ -506,7 +524,16 @@ class pulsar(a.amp.RadioFixedBody):
 
          self.parfile = pfile.name
         
-	
+
+
+#
+#   _________              _________         __         .__                 
+#  /   _____/______   ____ \_   ___ \_____ _/  |______  |  |   ____   ____  
+#  \_____  \\_  __ \_/ ___\/    \  \/\__  \\   __\__  \ |  |  /  _ \ / ___\ 
+#  /        \|  | \/\  \___\     \____/ __ \|  |  / __ \|  |_(  <_> ) /_/  >
+# /_______  /|__|    \___  >\______  (____  /__| (____  /____/\____/\___  / 
+#         \/             \/        \/     \/          \/           /_____/  
+#  
 
 class PSrcCatalog(a.amp.SrcCatalog):
     """
